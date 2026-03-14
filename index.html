@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Talks Today</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        #header {
+            text-align: center;
+            border-bottom: 2px solid #007BFF;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #007BFF;
+            margin-bottom: 0;
+        }
+        #search-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        #search-box {
+            padding: 10px;
+            width: 60%;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .schedule-item {
+            background: #fff;
+            border-left: 5px solid #007BFF;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            display: flex;
+            transition: all 0.3s ease-in-out;
+        }
+        .schedule-item.break {
+            border-left-color: #6c757d;
+        }
+        .time {
+            font-weight: bold;
+            color: #007BFF;
+            width: 120px;
+            flex-shrink: 0;
+        }
+        .break .time {
+            color: #6c757d;
+        }
+        .details {
+            flex-grow: 1;
+        }
+        .title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #343a40;
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+        .speakers {
+            font-style: italic;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        .category {
+            display: inline-block;
+            background-color: #e9ecef;
+            color: #495057;
+            padding: 3px 8px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            margin-right: 5px;
+            margin-bottom: 10px;
+        }
+        .description {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="header">
+        <h1>Tech Talks Today</h1>
+        <p>A One-Day Virtual Conference</p>
+    </div>
+
+    <div id="search-container">
+        <input type="text" id="search-box" placeholder="Search by category (e.g., AI, Cloud)...">
+    </div>
+
+    <div id="schedule">
+        <!-- Schedule will be dynamically inserted here -->
+    </div>
+
+    <script>
+        const talks = [
+            {
+                title: "The Future of Artificial Intelligence",
+                speakers: ["Dr. Evelyn Reed"],
+                category: ["AI", "Machine Learning"],
+                duration: 60,
+                description: "A deep dive into the latest advancements in AI and what we can expect in the next decade."
+            },
+            {
+                title: "Modern Web Development with Serverless Architectures",
+                speakers: ["Johnathan Carter", "Maria Rodriguez"],
+                category: ["Web Dev", "Cloud", "Serverless"],
+                duration: 60,
+                description: "Exploring how serverless is changing the landscape of web application development, with live demos and best practices."
+            },
+            {
+                title: "Cybersecurity in a Post-Quantum World",
+                speakers: ["Ben Sullivan"],
+                category: ["Security", "Cryptography"],
+                duration: 60,
+                description: "An overview of the threats quantum computing poses to current encryption standards and the race to develop quantum-resistant cryptography."
+            },
+            {
+                title: "Building Scalable and Resilient Systems",
+                speakers: ["Fatima Al-Jamil"],
+                category: ["DevOps", "Cloud", "Architecture"],
+                duration: 60,
+                description: "Learn the principles of designing and maintaining systems that can handle massive scale while remaining resilient to failures."
+            },
+            {
+                title: "The Ethics of AI: Navigating the Grey Areas",
+                speakers: ["Dr. Kenji Tanaka", "Priya Sharma"],
+                category: ["AI", "Ethics"],
+                duration: 60,
+                description: "A thoughtful discussion on the ethical challenges and responsibilities that come with developing powerful AI systems."
+            },
+            {
+                title: "Introduction to Augmented Reality with WebXR",
+                speakers: ["Chloe O'Brian"],
+                category: ["Web Dev", "XR", "3D"],
+                duration: 60,
+                description: "Discover how to build immersive augmented reality experiences that run directly in the browser using the WebXR API."
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const scheduleContainer = document.getElementById('schedule');
+            const searchBox = document.getElementById('search-box');
+
+            function formatTime(date) {
+                return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            }
+
+            function generateSchedule() {
+                scheduleContainer.innerHTML = '';
+                let currentTime = new Date();
+                currentTime.setHours(10, 0, 0, 0); // Event starts at 10:00 AM
+
+                talks.forEach((talk, index) => {.
+                    if (index === 3) { // Lunch break after the 3rd talk
+                        const startTime = new Date(currentTime);
+                        const endTime = new Date(startTime.getTime() + 60 * 60 * 1000);
+                        const item = document.createElement('div');
+                        item.className = 'schedule-item break';
+                        item.innerHTML = `
+                            <div class="time">${formatTime(startTime)} - ${formatTime(endTime)}</div>
+                            <div class="details">
+                                <div class="title">Lunch Break</div>
+                            </div>
+                        `;
+                        scheduleContainer.appendChild(item);
+                        currentTime = endTime;
+                         // Add 10 minute transition after lunch
+                        currentTime.setMinutes(currentTime.getMinutes() + 10);
+                    }
+
+                    const startTime = new Date(currentTime);
+                    const endTime = new Date(startTime.getTime() + talk.duration * 60 * 1000);
+
+                    const item = document.createElement('div');
+                    item.className = 'schedule-item';
+                    item.dataset.categories = talk.category.join(',').toLowerCase();
+                    
+                    item.innerHTML = `
+                        <div class="time">${formatTime(startTime)} - ${formatTime(endTime)}</div>
+                        <div class="details">
+                            <div class="title">${talk.title}</div>
+                            <div class="speakers">${talk.speakers.join(', ')}</div>
+                            <div>${talk.category.map(c => `<span class="category">${c}</span>`).join('')}</div>
+                            <p class="description">${talk.description}</p>
+                        </div>
+                    `;
+                    scheduleContainer.appendChild(item);
+
+                    // Add transition time for the next talk
+                    currentTime = new Date(endTime.getTime() + 10 * 60 * 1000);
+                });
+            }
+
+            function filterTalks() {
+                const query = searchBox.value.toLowerCase().trim();
+                const items = scheduleContainer.getElementsByClassName('schedule-item');
+
+                for (let item of items) {
+                    if (item.classList.contains('break')) {
+                        continue; // Always show breaks
+                    }
+                    const categories = item.dataset.categories;
+                    if (!query || categories.includes(query)) {
+                        item.classList.remove('hidden');
+                    } else {
+                        item.classList.add('hidden');
+                    }
+                }
+            }
+
+            searchBox.addEventListener('keyup', filterTalks);
+
+            generateSchedule();
+        });
+    </script>
+</body>
+</html>
